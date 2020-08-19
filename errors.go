@@ -227,10 +227,13 @@ func WithMessage(err error, message string) error {
 // WithMessagef annotates err with the format specifier.
 // If err is nil, WithMessagef returns nil.
 func WithMessagef(err error, format string, args ...interface{}) error {
-	if err != nil {
-		err = WithMessage(err, fmt.Sprintf(format, args...))
+	if err == nil {
+		return nil
 	}
-	return err
+	return &withMessage{
+		cause: err,
+		msg:   fmt.Sprintf(format, args...),
+	}
 }
 
 type withMessage struct {
